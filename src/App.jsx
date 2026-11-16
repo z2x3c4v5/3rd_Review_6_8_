@@ -3,81 +3,57 @@ import React, { useState, useEffect, useRef } from 'react';
 // =================================================================
 //  ✏️ 여기만 채우면 됩니다 — 단원별 표현 + 이미지
 // -----------------------------------------------------------------
-//  - 6개 단원(Unit 1~6)에 표현을 넣어주세요.
-//  - 한 단원에 여러 문장을 넣어두면, 게임을 시작할 때마다
-//    그 중 필요한 개수만큼을 "무작위로" 뽑아 보드에 배치합니다.
-//  - image: /images/파일명 (public/images 에 커밋된 이미지)
-//  - emoji: 그림(image)이 없거나 불러오지 못할 때 대신 보여줄 이모지입니다.
-//  - question / answer: 학생이 말할 영어 질문과 대답입니다.
-//  - ko: (선택) 한글 뜻. 원하면 화면에 자막처럼 보여줄 수 있습니다.
+//  3학년 6~8단원 주요표현 (https://z2x3c4v5.github.io/3rd_6th_8th_Project/)
+//   · 6단원 Can you ~?        : Can you swim? / Yes, I can. / No, I can't.
+//   · 7단원 What's in my bag? : Do you have a pen? / Yes, I do. I have a pen.
+//                                                   / No, I don't. I don't have a pen.
+//   · 8단원 기분 · 나이        : How are you today? / I'm happy.
+//                               How old are you? / I'm ten years old.
+//  - 한 단원에 여러 문장을 넣어두면, 게임을 시작할 때마다 필요한 개수만큼 무작위로 뽑아 배치합니다.
+//  - image: /images/파일명 (public/images, Canva 로 만든 그림)
+//  - emoji: 그림을 불러오지 못할 때 대신 보여줄 이모지
+//  - 그림 속 표정(👍 웃음 / ❌ 못 함·없음)을 보고 Yes / No 대답을 고릅니다.
 // =================================================================
 const UNIT_POOLS = {
-  '1단원': [
-    { emoji: '1️⃣', image: '/images/01_i_m_in_the_first_grade.png', question: 'What grade are you in?', answer: "I'm in the first grade.", ko: '너는 몇 학년이니? / 나는 1학년이야.' },
-    { emoji: '2️⃣', image: '/images/02_i_m_in_the_second_grade.png', question: 'What grade are you in?', answer: "I'm in the second grade.", ko: '너는 몇 학년이니? / 나는 2학년이야.' },
-    { emoji: '3️⃣', image: '/images/03_i_m_in_the_third_grade.png', question: 'What grade are you in?', answer: "I'm in the third grade.", ko: '너는 몇 학년이니? / 나는 3학년이야.' },
-    { emoji: '4️⃣', image: '/images/04_i_m_in_the_fourth_grade.png', question: 'What grade are you in?', answer: "I'm in the fourth grade.", ko: '너는 몇 학년이니? / 나는 4학년이야.' },
-    { emoji: '5️⃣', image: '/images/05_i_m_in_the_fifth_grade.png', question: 'What grade are you in?', answer: "I'm in the fifth grade.", ko: '너는 몇 학년이니? / 나는 5학년이야.' },
-    { emoji: '6️⃣', image: '/images/06_i_m_in_the_sixth_grade.png', question: 'What grade are you in?', answer: "I'm in the sixth grade.", ko: '너는 몇 학년이니? / 나는 6학년이야.' },
-    { emoji: '⚽', image: '/images/07_i_m_in_the_soccer_club.png', question: 'What club are you in?', answer: "I'm in the soccer club.", ko: '너는 무슨 동아리에 있니? / 나는 축구 동아리에 있어.' },
-    { emoji: '➗', image: '/images/08_i_m_in_the_math_club.png', question: 'What club are you in?', answer: "I'm in the math club.", ko: '너는 무슨 동아리에 있니? / 나는 수학 동아리에 있어.' },
-    { emoji: '🤖', image: '/images/09_i_m_in_the_robot_club.png', question: 'What club are you in?', answer: "I'm in the robot club.", ko: '너는 무슨 동아리에 있니? / 나는 로봇 동아리에 있어.' },
-  ],
-  '2단원': [
-    { emoji: '🐕', image: '/images/01_i_m_going_to_walk_my_dog.png', question: 'What are you going to do tomorrow?', answer: "I'm going to walk my dog.", ko: '너 내일 뭐 할 거니? / 나는 개를 산책시킬 거야.' },
-    { emoji: '🛍️', image: '/images/02_i_m_going_to_go_shopping.png', question: 'What are you going to do tomorrow?', answer: "I'm going to go shopping.", ko: '너 내일 뭐 할 거니? / 나는 쇼핑하러 갈 거야.' },
-    { emoji: '📚', image: '/images/03_i_m_going_to_go_to_the_library.png', question: 'What are you going to do this afternoon?', answer: "I'm going to go to the library.", ko: '너 오늘 오후에 뭐 할 거니? / 나는 도서관에 갈 거야.' },
-    { emoji: '🏛️', image: '/images/04_i_m_going_to_visit_a_museum.png', question: 'What are you going to do this afternoon?', answer: "I'm going to visit a museum.", ko: '너 오늘 오후에 뭐 할 거니? / 나는 박물관에 갈 거야.' },
-    { emoji: '🎻', image: '/images/05_i_m_going_to_take_a_violin_lesson.png', question: 'What are you going to do after school?', answer: "I'm going to take a violin lesson.", ko: '너 방과 후에 뭐 할 거니? / 나는 바이올린 레슨을 받을 거야.' },
-    { emoji: '🍪', image: '/images/06_i_m_going_to_bake_cookies.png', question: 'What are you going to do after school?', answer: "I'm going to bake cookies.", ko: '너 방과 후에 뭐 할 거니? / 나는 쿠키를 구울 거야.' },
-  ],
-  // 3단원: 제안하기. 학생이 연습해야 할 표현은 질문 쪽("How about ~ing?")이라,
-  // say:'q' 로 표시해 학생이 question(제안)을 말하고 채점받도록 한다. (answer 'Sounds good.'은 짝 응답)
-  '3단원': [
-    { emoji: '🌳', image: '/images/01_Planting_Trees.png', question: 'How about planting trees?', answer: 'Sounds good.', say: 'q', ko: '나무를 심는 게 어때? / 좋아.' },
-    { emoji: '🥤', image: '/images/02_Using_a_Cup.png', question: 'How about using a cup?', answer: 'Sounds good.', say: 'q', ko: '컵을 사용하는 게 어때? / 좋아.' },
-    { emoji: '🚲', image: '/images/03_Riding_a_bike.png', question: 'How about riding a bike?', answer: 'Sounds good.', say: 'q', ko: '자전거를 타는 게 어때? / 좋아.' },
-    { emoji: '♻️', image: '/images/04_Plastic_bottle.png', question: 'How about reusing plastic bottles?', answer: 'Sounds good.', say: 'q', ko: '플라스틱 병을 재사용하는 게 어때? / 좋아.' },
-    { emoji: '🏖️', image: '/images/05_going_beach.png', question: 'How about cleaning up the beach?', answer: 'Sounds good.', say: 'q', ko: '해변을 청소하는 게 어때? / 좋아.' },
-    { emoji: '💡', image: '/images/06_Turing_off_the_light.png', question: 'How about turning off the light?', answer: 'Sounds good.', say: 'q', ko: '불을 끄는 게 어때? / 좋아.' },
-  ],
-  '4단원': [
-    { emoji: '🎂', image: '/images/01_it_s_on_january_5th.png', question: 'When is your birthday?', answer: "It's on January 5th.", ko: '네 생일은 언제니? / 1월 5일이야.' },
-    { emoji: '🛒', image: '/images/02_it_s_on_february_12th.png', question: 'When is the school market day?', answer: "It's on February 12th.", ko: '알뜰시장 날은 언제니? / 2월 12일이야.' },
-    { emoji: '🚌', image: '/images/03_it_s_on_march_21st.png', question: 'When is the field trip?', answer: "It's on March 21st.", ko: '현장학습은 언제니? / 3월 21일이야.' },
-    { emoji: '⚽', image: '/images/04_it_s_on_april_2nd.png', question: 'When is the soccer game?', answer: "It's on April 2nd.", ko: '축구 경기는 언제니? / 4월 2일이야.' },
-    { emoji: '🏅', image: '/images/05_it_s_on_may_8th.png', question: 'When is Sports Day?', answer: "It's on May 8th.", ko: '운동회는 언제니? / 5월 8일이야.' },
-    { emoji: '🎪', image: '/images/06_it_s_on_june_30th.png', question: 'When is the school festival?', answer: "It's on June 30th.", ko: '학교 축제는 언제니? / 6월 30일이야.' },
-    { emoji: '🎂', image: '/images/07_it_s_on_july_17th.png', question: 'When is your birthday?', answer: "It's on July 17th.", ko: '네 생일은 언제니? / 7월 17일이야.' },
-    { emoji: '🛒', image: '/images/08_it_s_on_august_19th.png', question: 'When is the school market day?', answer: "It's on August 19th.", ko: '알뜰시장 날은 언제니? / 8월 19일이야.' },
-    { emoji: '🚌', image: '/images/09_it_s_on_september_3rd.png', question: 'When is the field trip?', answer: "It's on September 3rd.", ko: '현장학습은 언제니? / 9월 3일이야.' },
-    { emoji: '⚽', image: '/images/10_it_s_on_october_14th.png', question: 'When is the soccer game?', answer: "It's on October 14th.", ko: '축구 경기는 언제니? / 10월 14일이야.' },
-    { emoji: '🏅', image: '/images/11_it_s_on_november_25th.png', question: 'When is Sports Day?', answer: "It's on November 25th.", ko: '운동회는 언제니? / 11월 25일이야.' },
-    { emoji: '🎪', image: '/images/12_it_s_on_december_31st.png', question: 'When is the school festival?', answer: "It's on December 31st.", ko: '학교 축제는 언제니? / 12월 31일이야.' },
-  ],
-  '5단원': [
-    { emoji: '🏃', image: '/images/01_i_exercise_once_a_week.png', question: 'How often do you exercise?', answer: 'I exercise once a week.', ko: '너는 얼마나 자주 운동하니? / 나는 일주일에 한 번 운동해.' },
-    { emoji: '🍔', image: '/images/02_i_eat_fast_food_twice_a_week.png', question: 'How often do you eat fast food?', answer: 'I eat fast food twice a week.', ko: '너는 얼마나 자주 패스트푸드를 먹니? / 나는 일주일에 두 번 패스트푸드를 먹어.' },
-    { emoji: '🌙', image: '/images/03_i_stay_up_late_three_times_a_month.png', question: 'How often do you stay up late?', answer: 'I stay up late three times a month.', ko: '너는 얼마나 자주 늦게까지 안 자니? / 나는 한 달에 세 번 늦게까지 깨어 있어.' },
-    { emoji: '🪥', image: '/images/04_i_brush_my_teeth_three_times_a_day.png', question: 'How often do you brush your teeth?', answer: 'I brush my teeth three times a day.', ko: '너는 얼마나 자주 이를 닦니? / 나는 하루에 세 번 이를 닦아.' },
-    { emoji: '🧼', image: '/images/05_i_wash_my_hands_five_times_a_day.png', question: 'How often do you wash your hands?', answer: 'I wash my hands five times a day.', ko: '너는 얼마나 자주 손을 씻니? / 나는 하루에 다섯 번 손을 씻어.' },
-    { emoji: '🚲', image: '/images/06_i_ride_a_bike_twice_a_month.png', question: 'How often do you ride a bike?', answer: 'I ride a bike twice a month.', ko: '너는 얼마나 자주 자전거를 타니? / 나는 한 달에 두 번 자전거를 타.' },
-  ],
-  // 6단원: 비교급. 이미지는 아직 미업로드 — 아래 경로는 기존 파일명 규칙(NN_답문장) 기준 예상값.
-  // 6단원 이미지를 public/images 에 올리면 자동 연결됩니다(이름 다르면 경로만 맞추면 됨). 그 전엔 이모지 표시.
   '6단원': [
-    { emoji: '🏃', image: '/images/01_amy_is_faster_than_tom.png', question: 'Who is faster, Amy or Tom?', answer: 'Amy is faster than Tom.', ko: 'Amy와 Tom 중 누가 더 빠르니? / Amy가 Tom보다 더 빨라.' },
-    { emoji: '🎂', image: '/images/02_jack_is_older_than_sally.png', question: 'Who is older, Jack or Sally?', answer: 'Jack is older than Sally.', ko: 'Jack과 Sally 중 누가 더 나이가 많니? / Jack이 Sally보다 나이가 많아.' },
-    { emoji: '🎒', image: '/images/03_the_yellow_bag_is_lighter_than_the_green_bag.png', question: 'Which is lighter, the yellow bag or the green bag?', answer: 'The yellow bag is lighter than the green bag.', ko: '노란 가방과 초록 가방 중 어느 것이 더 가볍니? / 노란 가방이 초록 가방보다 더 가벼워.' },
-    { emoji: '🍦', image: '/images/04_your_ice_cream_is_bigger_than_mine.png', question: 'Which is bigger, my ice cream or yours?', answer: 'Your ice cream is bigger than mine.', ko: '내 아이스크림과 네 것 중 어느 것이 더 크니? / 네 아이스크림이 내 것보다 더 커.' },
-    { emoji: '🌳', image: '/images/05_the_orange_tree_is_taller_than_the_apple_tree.png', question: 'Which is taller, the orange tree or the apple tree?', answer: 'The orange tree is taller than the apple tree.', ko: '오렌지 나무와 사과 나무 중 어느 것이 더 크니? / 오렌지 나무가 사과 나무보다 더 커.' },
-    { emoji: '✏️', image: '/images/06_the_yellow_pencil_is_longer_than_the_pink_pencil.png', question: 'Which is longer, the yellow pencil or the pink pencil?', answer: 'The yellow pencil is longer than the pink pencil.', ko: '노란 연필과 분홍 연필 중 어느 것이 더 기니? / 노란 연필이 분홍 연필보다 더 길어.' },
-    { emoji: '⚽', image: '/images/07_i_don_t_think_so_the_soccer_ball_is_heavier_than_t.png', question: 'Which is heavier, the soccer ball or the tennis ball? The tennis ball is heavier than the soccer ball.', answer: "I don't think so. The soccer ball is heavier than the tennis ball.", ko: '축구공과 테니스공 중 어느 것이 더 무겁니? 테니스공이 축구공보다 더 무거워. / 난 그렇게 생각하지 않아. 축구공이 테니스공보다 더 무거워.' },
-    { emoji: '🦘', image: '/images/08_i_don_t_think_so_the_kangaroo_is_stronger_than_the.png', question: 'Which is stronger, the kangaroo or the dog? The dog is stronger than the kangaroo.', answer: "I don't think so. The kangaroo is stronger than the dog.", ko: '캥거루와 개 중 어느 것이 더 힘이 세니? 개가 캥거루보다 더 힘이 세. / 난 그렇게 생각하지 않아. 캥거루가 개보다 더 힘이 세.' },
+    { emoji: '🏊', image: '/images/u6_01_swim_yes.png', question: 'Can you swim?', answer: 'Yes, I can.', ko: '너는 수영할 수 있니? / 응, 할 수 있어.' },
+    { emoji: '⛸️', image: '/images/u6_02_skate_no.png', question: 'Can you skate?', answer: "No, I can't.", ko: '너는 스케이트를 탈 수 있니? / 아니, 못 해.' },
+    { emoji: '⛷️', image: '/images/u6_03_ski_yes.png', question: 'Can you ski?', answer: 'Yes, I can.', ko: '너는 스키를 탈 수 있니? / 응, 할 수 있어.' },
+    { emoji: '💃', image: '/images/u6_04_dance_yes.png', question: 'Can you dance?', answer: 'Yes, I can.', ko: '너는 춤출 수 있니? / 응, 할 수 있어.' },
+    { emoji: '🍳', image: '/images/u6_05_cook_no.png', question: 'Can you cook?', answer: "No, I can't.", ko: '너는 요리할 수 있니? / 아니, 못 해.' },
+    { emoji: '⚽', image: '/images/u6_06_soccer_yes.png', question: 'Can you play soccer?', answer: 'Yes, I can.', ko: '너는 축구를 할 수 있니? / 응, 할 수 있어.' },
+    { emoji: '🚲', image: '/images/u6_07_bike_no.png', question: 'Can you ride a bike?', answer: "No, I can't.", ko: '너는 자전거를 탈 수 있니? / 아니, 못 해.' },
+    { emoji: '🎹', image: '/images/u6_08_piano_yes.png', question: 'Can you play the piano?', answer: 'Yes, I can.', ko: '너는 피아노를 칠 수 있니? / 응, 할 수 있어.' },
+    { emoji: '🪢', image: '/images/u6_09_jumprope_no.png', question: 'Can you jump rope?', answer: "No, I can't.", ko: '너는 줄넘기를 할 수 있니? / 아니, 못 해.' },
+    { emoji: '🎤', image: '/images/u6_10_sing_yes.png', question: 'Can you sing?', answer: 'Yes, I can.', ko: '너는 노래할 수 있니? / 응, 할 수 있어.' },
+  ],
+  '7단원': [
+    { emoji: '🖊️', image: '/images/u7_01_pen_yes.png', question: 'Do you have a pen?', answer: 'Yes, I do. I have a pen.', ko: '너는 펜을 가지고 있니? / 응, 있어. 나는 펜을 가지고 있어.' },
+    { emoji: '📏', image: '/images/u7_02_ruler_no.png', question: 'Do you have a ruler?', answer: "No, I don't. I don't have a ruler.", ko: '너는 자를 가지고 있니? / 아니, 없어. 나는 자가 없어.' },
+    { emoji: '🧽', image: '/images/u7_03_eraser_yes.png', question: 'Do you have an eraser?', answer: 'Yes, I do. I have an eraser.', ko: '너는 지우개를 가지고 있니? / 응, 있어. 나는 지우개를 가지고 있어.' },
+    { emoji: '📓', image: '/images/u7_04_notebook_no.png', question: 'Do you have a notebook?', answer: "No, I don't. I don't have a notebook.", ko: '너는 공책을 가지고 있니? / 아니, 없어. 나는 공책이 없어.' },
+    { emoji: '🖍️', image: '/images/u7_05_crayon_yes.png', question: 'Do you have a crayon?', answer: 'Yes, I do. I have a crayon.', ko: '너는 크레용을 가지고 있니? / 응, 있어. 나는 크레용을 가지고 있어.' },
+    { emoji: '✏️', image: '/images/u7_06_pencil_no.png', question: 'Do you have a pencil?', answer: "No, I don't. I don't have a pencil.", ko: '너는 연필을 가지고 있니? / 아니, 없어. 나는 연필이 없어.' },
+    { emoji: '📕', image: '/images/u7_07_book_yes.png', question: 'Do you have a book?', answer: 'Yes, I do. I have a book.', ko: '너는 책을 가지고 있니? / 응, 있어. 나는 책을 가지고 있어.' },
+    { emoji: '☂️', image: '/images/u7_08_umbrella_no.png', question: 'Do you have an umbrella?', answer: "No, I don't. I don't have an umbrella.", ko: '너는 우산을 가지고 있니? / 아니, 없어. 나는 우산이 없어.' },
+    { emoji: '🍎', image: '/images/u7_09_apple_yes.png', question: 'Do you have an apple?', answer: 'Yes, I do. I have an apple.', ko: '너는 사과를 가지고 있니? / 응, 있어. 나는 사과를 가지고 있어.' },
+    { emoji: '🧸', image: '/images/u7_10_teddybear_no.png', question: 'Do you have a teddy bear?', answer: "No, I don't. I don't have a teddy bear.", ko: '너는 곰 인형을 가지고 있니? / 아니, 없어. 나는 곰 인형이 없어.' },
+  ],
+  '8단원': [
+    { emoji: '😄', image: '/images/u8_01_happy.png', question: 'How are you today?', answer: "I'm happy.", ko: '오늘 기분이 어때? / 나는 행복해.' },
+    { emoji: '😢', image: '/images/u8_02_sad.png', question: 'How are you today?', answer: "I'm sad.", ko: '오늘 기분이 어때? / 나는 슬퍼.' },
+    { emoji: '😠', image: '/images/u8_03_angry.png', question: 'How are you today?', answer: "I'm angry.", ko: '오늘 기분이 어때? / 나는 화가 나.' },
+    { emoji: '🤤', image: '/images/u8_04_hungry.png', question: 'How are you today?', answer: "I'm hungry.", ko: '오늘 기분이 어때? / 나는 배가 고파.' },
+    { emoji: '😪', image: '/images/u8_05_tired.png', question: 'How are you today?', answer: "I'm tired.", ko: '오늘 기분이 어때? / 나는 피곤해.' },
+    { emoji: '8️⃣', image: '/images/u8_06_eight.png', question: 'How old are you?', answer: "I'm eight years old.", ko: '너는 몇 살이니? / 나는 여덟 살이야.' },
+    { emoji: '9️⃣', image: '/images/u8_07_nine.png', question: 'How old are you?', answer: "I'm nine years old.", ko: '너는 몇 살이니? / 나는 아홉 살이야.' },
+    { emoji: '🔟', image: '/images/u8_08_ten.png', question: 'How old are you?', answer: "I'm ten years old.", ko: '너는 몇 살이니? / 나는 열 살이야.' },
+    { emoji: '🎂', image: '/images/u8_09_eleven.png', question: 'How old are you?', answer: "I'm eleven years old.", ko: '너는 몇 살이니? / 나는 열한 살이야.' },
+    { emoji: '🎉', image: '/images/u8_10_twelve.png', question: 'How old are you?', answer: "I'm twelve years old.", ko: '너는 몇 살이니? / 나는 열두 살이야.' },
   ],
 };
 
-const ALL_UNITS = ['1단원', '2단원', '3단원', '4단원', '5단원', '6단원'];
+const ALL_UNITS = ['6단원', '7단원', '8단원'];
 
 // 별 스티커 전체 집계용: 모든 단원의 표현 개수 합계
 const TOTAL_EXPRESSIONS = Object.values(UNIT_POOLS).reduce((s, p) => s + p.length, 0);
@@ -103,32 +79,23 @@ const CONTENT_SLOTS = BOARD_LAYOUT.filter((c) => c.type === 'content').length; /
 
 // 단원별 배지(글자) 색 — 파스텔 계열
 const UNIT_COLORS = {
-  '1단원': 'text-rose-700 bg-rose-50 border-rose-300',
-  '2단원': 'text-amber-700 bg-amber-50 border-amber-300',
-  '3단원': 'text-emerald-700 bg-emerald-50 border-emerald-300',
-  '4단원': 'text-violet-700 bg-violet-50 border-violet-300',
-  '5단원': 'text-cyan-700 bg-cyan-50 border-cyan-300',
-  '6단원': 'text-fuchsia-700 bg-fuchsia-50 border-fuchsia-300',
+  '6단원': 'text-rose-700 bg-rose-50 border-rose-300',
+  '7단원': 'text-amber-700 bg-amber-50 border-amber-300',
+  '8단원': 'text-emerald-700 bg-emerald-50 border-emerald-300',
 };
 
 // 단원별 칸 배경(파스텔 채색)
 const UNIT_CELL = {
-  '1단원': 'bg-rose-100 border-rose-300 shadow-[0_6px_0_0_#fda4af]',
-  '2단원': 'bg-amber-100 border-amber-300 shadow-[0_6px_0_0_#fcd34d]',
-  '3단원': 'bg-emerald-100 border-emerald-300 shadow-[0_6px_0_0_#6ee7b7]',
-  '4단원': 'bg-violet-100 border-violet-300 shadow-[0_6px_0_0_#c4b5fd]',
-  '5단원': 'bg-cyan-100 border-cyan-300 shadow-[0_6px_0_0_#67e8f9]',
-  '6단원': 'bg-fuchsia-100 border-fuchsia-300 shadow-[0_6px_0_0_#f0abfc]',
+  '6단원': 'bg-rose-100 border-rose-300 shadow-[0_6px_0_0_#fda4af]',
+  '7단원': 'bg-amber-100 border-amber-300 shadow-[0_6px_0_0_#fcd34d]',
+  '8단원': 'bg-emerald-100 border-emerald-300 shadow-[0_6px_0_0_#6ee7b7]',
 };
 
 // 로비 단원 토글 버튼 색
 const UNIT_TOGGLE_ON = {
-  '1단원': 'bg-rose-500 border-rose-600 text-white',
-  '2단원': 'bg-amber-500 border-amber-600 text-white',
-  '3단원': 'bg-emerald-500 border-emerald-600 text-white',
-  '4단원': 'bg-violet-500 border-violet-600 text-white',
-  '5단원': 'bg-cyan-500 border-cyan-600 text-white',
-  '6단원': 'bg-fuchsia-500 border-fuchsia-600 text-white',
+  '6단원': 'bg-rose-500 border-rose-600 text-white',
+  '7단원': 'bg-amber-500 border-amber-600 text-white',
+  '8단원': 'bg-emerald-500 border-emerald-600 text-white',
 };
 
 const shuffle = (arr) => {
@@ -152,7 +119,7 @@ const pickForUnit = (pool, n) => {
 };
 
 // 선택한 단원들로 24개 일반칸을 자동 균등 배분해 보드를 생성
-//  - 6개=단원당 4칸, 3개=8칸, 2개=12칸 (남는 칸은 앞쪽 단원에 1칸씩 더)
+//  - 3개=단원당 8칸, 2개=12칸 (남는 칸은 앞쪽 단원에 1칸씩 더)
 const buildBoard = (selectedUnits) => {
   const units = (selectedUnits && selectedUnits.length ? selectedUnits : ALL_UNITS).filter(
     (u) => UNIT_POOLS[u],
@@ -192,6 +159,8 @@ const ORDINAL_WORDS = {
   thirteenth: '13', fourteenth: '14', fifteenth: '15', sixteenth: '16', seventeenth: '17',
   eighteenth: '18', nineteenth: '19', twentieth: '20', twentyfirst: '21', twentysecond: '22',
   twentythird: '23', thirtieth: '30', thirtyfirst: '31',
+  // 8단원 나이: 'ten' 과 '10' 을 같은 것으로 인식
+  eight: '8', nine: '9', ten: '10', eleven: '11', twelve: '12',
 };
 
 const STOPWORDS = new Set([
@@ -369,6 +338,20 @@ const WORD_MEANING = {
   eyes: '눈', hair: '머리카락', glasses: '안경', dress: '원피스', shirt: '셔츠',
   wearing: '입고/쓰고 있는', short: '짧은', long: '긴',
   blue: '파란', gray: '회색', brown: '갈색', red: '빨간', white: '하얀', yellow: '노란',
+  // ---- 3학년 6~8단원 ----
+  yes: '응, 네', no: '아니, 아니요', "can't": '~할 수 없다 (cannot)', cant: '~할 수 없다 (cannot)',
+  "don't": '~하지 않다 (do not)', dont: '~하지 않다 (do not)',
+  // 6단원 Can you ~?
+  swim: '수영하다', skate: '스케이트를 타다', ski: '스키를 타다', dance: '춤추다', cook: '요리하다',
+  play: '(운동을) 하다, (악기를) 치다', soccer: '축구', ride: '타다', bike: '자전거',
+  piano: '피아노', jump: '뛰다, 점프하다', rope: '줄 (jump rope : 줄넘기하다)', sing: '노래하다',
+  // 7단원 What's in my bag?
+  pen: '펜', ruler: '자', eraser: '지우개', notebook: '공책', crayon: '크레용', pencil: '연필',
+  book: '책', umbrella: '우산', apple: '사과', teddy: '테디 (teddy bear : 곰 인형)', bear: '곰', bag: '가방',
+  // 8단원 기분 · 나이
+  today: '오늘', old: '나이가 ~인 (How old? 몇 살?)', years: '해, 년 (years old : ~살)',
+  hungry: '배고픈',
+  eight: '8, 여덟', nine: '9, 아홉', ten: '10, 열', eleven: '11, 열하나', twelve: '12, 열둘',
 };
 
 const lookupMeaning = (raw) => {
@@ -393,8 +376,8 @@ const pickRandomBlanks = (segs, count) => {
 };
 
 // 보드에서 단원별로 쓰기 활동 칸을 2개씩 무작위로 뽑음
-//  (6단원 모두 선택 시 2×6 = 총 12칸)
-const WRITING_PER_UNIT = 2;
+//  (3개 단원 모두 선택 시 4×3 = 총 12칸)
+const WRITING_PER_UNIT = 4;
 const pickWritingCells = (board, selectedUnits) => {
   const units = (selectedUnits && selectedUnits.length ? selectedUnits : ALL_UNITS);
   const out = new Set();
@@ -1283,7 +1266,7 @@ export default function App() {
           <div className="absolute top-1 left-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">🌊</div>
           <div className="absolute bottom-1 right-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">⛱️</div>
           <h1 className="relative text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight break-keep drop-shadow-[0_2px_0_rgba(2,132,199,0.9)]">
-            🏖️ 6학년 1-6단원 주요표현 보드게임{' '}
+            🎒 3학년 6~8단원 주요표현 보드게임{' '}
             <span className="text-yellow-200">with Writing</span> 🏄
           </h1>
         </div>
@@ -1352,7 +1335,7 @@ export default function App() {
       {boardWritingMode && (
         <div className="w-full max-w-6xl bg-violet-100 border-4 border-violet-400 p-3 rounded-2xl mb-4 text-center z-10 animate-pulse">
           <p className="text-base md:text-lg font-black text-violet-800">
-            ✏️ 쓰기 활동 — 단원별 2개씩, 총 <span className="text-violet-900">{writingCellIds.size}개 칸</span>에 표시된 ✏️ 쓰기 칸을 눌러보세요
+            ✏️ 쓰기 활동 — 단원별 4개씩, 총 <span className="text-violet-900">{writingCellIds.size}개 칸</span>에 표시된 ✏️ 쓰기 칸을 눌러보세요
           </p>
         </div>
       )}

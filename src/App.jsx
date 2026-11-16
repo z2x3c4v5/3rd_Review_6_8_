@@ -1180,7 +1180,7 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-sky-300 via-cyan-400 to-blue-600 text-gray-800 p-4 flex flex-col items-center relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-b from-amber-100 via-orange-100 to-amber-300 text-gray-800 p-4 flex flex-col items-center relative overflow-hidden"
       style={appStyle}
     >
       <style>{`
@@ -1241,14 +1241,14 @@ export default function App() {
         .face-bottom { transform: rotateX(-90deg) translateZ(64px); }
       `}</style>
 
-      {/* 바다·여름 장식 이모지 (배경) */}
+      {/* 학교·교실 장식 이모지 (배경) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-6 left-4 text-5xl md:text-6xl opacity-80 float-emoji">☀️</div>
-        <div className="absolute top-24 right-8 text-4xl md:text-5xl opacity-70 float-emoji" style={{ animationDelay: '1.2s' }}>⛱️</div>
-        <div className="absolute bottom-24 left-10 text-4xl md:text-5xl opacity-70 float-emoji" style={{ animationDelay: '0.6s' }}>🏄</div>
-        <div className="absolute bottom-10 right-12 text-4xl md:text-5xl opacity-70 float-emoji" style={{ animationDelay: '2s' }}>🍉</div>
-        <div className="absolute top-1/2 left-2 text-4xl md:text-5xl opacity-50 float-emoji" style={{ animationDelay: '1.6s' }}>🌊</div>
-        <div className="absolute top-1/3 right-2 text-4xl md:text-5xl opacity-50 float-emoji" style={{ animationDelay: '2.4s' }}>🌊</div>
+        <div className="absolute top-6 left-4 text-5xl md:text-6xl opacity-80 float-emoji">🏫</div>
+        <div className="absolute top-24 right-8 text-4xl md:text-5xl opacity-70 float-emoji" style={{ animationDelay: '1.2s' }}>📚</div>
+        <div className="absolute bottom-24 left-10 text-4xl md:text-5xl opacity-70 float-emoji" style={{ animationDelay: '0.6s' }}>🎒</div>
+        <div className="absolute bottom-10 right-12 text-4xl md:text-5xl opacity-70 float-emoji" style={{ animationDelay: '2s' }}>🍎</div>
+        <div className="absolute top-1/2 left-2 text-4xl md:text-5xl opacity-50 float-emoji" style={{ animationDelay: '1.6s' }}>✏️</div>
+        <div className="absolute top-1/3 right-2 text-4xl md:text-5xl opacity-50 float-emoji" style={{ animationDelay: '2.4s' }}>🔔</div>
       </div>
 
       {/* 별 스티커 획득 토스트 */}
@@ -1261,13 +1261,13 @@ export default function App() {
       )}
 
       <header className="w-full max-w-6xl mb-4 z-10 rounded-3xl overflow-hidden shadow-[0_6px_0_0_rgba(0,0,0,0.15)] border-4 border-white/80">
-        {/* 제목 띠 (바다 그라데이션) */}
-        <div className="relative bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-500 px-4 py-4 md:py-5 text-center overflow-hidden">
-          <div className="absolute top-1 left-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">🌊</div>
-          <div className="absolute bottom-1 right-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">⛱️</div>
-          <h1 className="relative text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight break-keep drop-shadow-[0_2px_0_rgba(2,132,199,0.9)]">
+        {/* 제목 띠 (칠판) */}
+        <div className="relative bg-gradient-to-br from-emerald-800 via-green-800 to-emerald-900 border-b-8 border-[#a0703c] px-4 py-4 md:py-5 text-center overflow-hidden">
+          <div className="absolute top-1 left-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">🖍️</div>
+          <div className="absolute bottom-1 right-3 text-2xl md:text-3xl opacity-70 select-none pointer-events-none">📏</div>
+          <h1 className="relative text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight break-keep drop-shadow-[0_2px_0_rgba(0,0,0,0.35)]">
             🎒 3학년 6~8단원 주요표현 보드게임{' '}
-            <span className="text-yellow-200">with Writing</span> 🏄
+            <span className="text-yellow-200">with Writing</span> ✏️
           </h1>
         </div>
 
@@ -1427,14 +1427,14 @@ export default function App() {
       )}
 
       <div
-        className={`w-full max-w-6xl p-6 md:p-12 rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] grid gap-3 md:gap-5 relative z-10 border-[14px] border-[#1e5a8a] bg-gradient-to-br from-sky-100 to-cyan-200 overflow-visible ${gameState === 'lobby' ? 'mb-24' : ''}`}
+        className={`w-full max-w-6xl p-6 md:p-12 rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] grid gap-3 md:gap-5 relative z-10 border-[14px] border-[#a0703c] bg-gradient-to-br from-lime-50 to-emerald-100 overflow-visible ${gameState === 'lobby' ? 'mb-24' : ''}`}
         style={{ gridTemplateColumns: `repeat(${BOARD_COLS}, minmax(0, 1fr))` }}
       >
-        {/* 판 모서리 바다 장식 */}
-        <div className="absolute -top-5 -left-4 text-4xl md:text-5xl select-none pointer-events-none rotate-[-12deg] z-20">🐚</div>
+        {/* 판 모서리 학용품 장식 */}
+        <div className="absolute -top-5 -left-4 text-4xl md:text-5xl select-none pointer-events-none rotate-[-12deg] z-20">📐</div>
         <div className="absolute -top-5 -right-4 text-4xl md:text-5xl select-none pointer-events-none rotate-[12deg] z-20">⭐</div>
-        <div className="absolute -bottom-5 -left-4 text-4xl md:text-5xl select-none pointer-events-none z-20">🦀</div>
-        <div className="absolute -bottom-5 -right-4 text-4xl md:text-5xl select-none pointer-events-none z-20">🐠</div>
+        <div className="absolute -bottom-5 -left-4 text-4xl md:text-5xl select-none pointer-events-none z-20">🖍️</div>
+        <div className="absolute -bottom-5 -right-4 text-4xl md:text-5xl select-none pointer-events-none z-20">📓</div>
 
         {board.map((cell, idx) => {
           const isPlayerHere = playerPos === idx;
@@ -1585,7 +1585,7 @@ export default function App() {
               ✕
             </button>
             <h2 className="text-2xl md:text-3xl font-black text-cyan-700 text-center mb-1">📖 활동 방법</h2>
-            <p className="text-center text-sm font-bold text-slate-500 mb-5">🏖️ 이렇게 놀며 공부해요!</p>
+            <p className="text-center text-sm font-bold text-slate-500 mb-5">🏫 이렇게 놀며 공부해요!</p>
 
             <div className="space-y-3 text-left">
               {[
@@ -1612,7 +1612,7 @@ export default function App() {
               onClick={closeGuide}
               className="mt-5 w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-white rounded-2xl font-black text-xl transition-all border-b-8 border-cyan-700 active:border-b-0 active:translate-y-2"
             >
-              시작할게요! 🏄
+              시작할게요! 🎒
             </button>
           </div>
         </div>

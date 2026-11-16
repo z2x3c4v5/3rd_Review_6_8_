@@ -98,24 +98,41 @@ const UNIT_TOGGLE_ON = {
   '8단원': 'bg-emerald-500 border-emerald-600 text-white',
 };
 
-const shuffle = (arr) => {
+// --- 고정 순서용 난수 -------------------------------------------------
+// 학생들이 언제 접속해도 보드의 그림 순서가 똑같도록, Math.random 대신
+// "씨앗(seed)"이 정해진 난수를 씁니다. 같은 단원 조합이면 항상 같은 배치가 나와요.
+// (배치를 바꾸고 싶으면 BOARD_SEED 숫자만 바꾸면 됩니다)
+const BOARD_SEED = 2026;
+const seededRandom = (seed) => {
+  let t = seed >>> 0;
+  return () => {
+    t = (t + 0x6d2b79f5) >>> 0;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+};
+const seedFor = (units) =>
+  [...units.join('|')].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0, BOARD_SEED);
+
+const shuffle = (arr, rand = Math.random) => {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rand() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 };
 
-// 한 단원에서 n개를 뽑는다. 표현이 n개보다 많으면 무작위로 n개를 뽑고,
-// 적으면 모든 표현을 한 번씩 쓴 뒤 무작위로 반복해 n개를 채운다(복습 반복 효과).
-const pickForUnit = (pool, n) => {
+// 한 단원에서 n개를 뽑는다. 표현이 n개보다 많으면 n개를 뽑고,
+// 적으면 모든 표현을 한 번씩 쓴 뒤 반복해 n개를 채운다(복습 반복 효과).
+const pickForUnit = (pool, n, rand) => {
   if (n <= 0 || pool.length === 0) return [];
-  const result = shuffle(pool);
+  const result = shuffle(pool, rand);
   while (result.length < n) {
-    result.push(pool[Math.floor(Math.random() * pool.length)]);
+    result.push(pool[Math.floor(rand() * pool.length)]);
   }
-  return shuffle(result.slice(0, n));
+  return shuffle(result.slice(0, n), rand);
 };
 
 // 선택한 단원들로 24개 일반칸을 자동 균등 배분해 보드를 생성
@@ -125,6 +142,7 @@ const buildBoard = (selectedUnits) => {
     (u) => UNIT_POOLS[u],
   );
   const n = units.length;
+  const rand = seededRandom(seedFor(units)); // 고정 순서
   const base = Math.floor(CONTENT_SLOTS / n);
   let remainder = CONTENT_SLOTS - base * n;
 
@@ -132,9 +150,9 @@ const buildBoard = (selectedUnits) => {
   units.forEach((unit) => {
     const count = base + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
-    pickForUnit(UNIT_POOLS[unit], count).forEach((item) => picked.push({ ...item, unit }));
+    pickForUnit(UNIT_POOLS[unit], count, rand).forEach((item) => picked.push({ ...item, unit }));
   });
-  const contentQueue = shuffle(picked);
+  const contentQueue = shuffle(picked, rand);
 
   let qi = 0;
   return BOARD_LAYOUT.map((layout, id) => {
@@ -1341,8 +1359,8 @@ export default function App() {
       )}
 
       {gameState === 'lobby' && (
-        <div className="w-full max-w-6xl bg-white/95 p-4 md:p-5 rounded-2xl shadow-md mb-4 z-10 border-4 border-cyan-400">
-          <h2 className="text-lg md:text-2xl font-black text-cyan-700 text-center mb-4">
+        <div className="w-full max-w-6xl bg-white/95 p-4 md:p-5 rounded-2xl shadow-md mb-4 z-10 border-4 border-[#a0703c] shadow-[0_6px_0_0_rgba(160,112,60,0.35)]">
+          <h2 className="text-lg md:text-2xl font-black text-emerald-800 text-center mb-4">
             💡 그림을 클릭하면 질문과 대답이 나와요. 듣고 · 따라 말하고 · 🎤 녹음하고 · 공책에 써봅시다!
           </h2>
 
@@ -1366,9 +1384,9 @@ export default function App() {
             })}
           </div>
 
-          <p className="text-center text-base md:text-lg font-black text-cyan-800">
-            선택 <span className="text-cyan-600">{unitCount}개</span> 단원 · 단원당 약{' '}
-            <span className="text-cyan-600">{perUnitCells}칸</span>
+          <p className="text-center text-base md:text-lg font-black text-emerald-800">
+            선택 <span className="text-amber-600">{unitCount}개</span> 단원 · 단원당 약{' '}
+            <span className="text-amber-600">{perUnitCells}칸</span>
           </p>
           <p className="text-center text-xs md:text-sm font-bold text-rose-500 mt-1">
             ※ 최소 2개 단원을 선택해야 게임을 시작할 수 있어요
@@ -1377,7 +1395,7 @@ export default function App() {
       )}
 
       {gameState === 'playing' && (
-        <div className="w-full max-w-6xl bg-white/95 p-4 rounded-2xl shadow-[0_4px_0_0_rgba(0,0,0,0.2)] mb-4 flex justify-between items-center border-l-8 border-cyan-500 z-10">
+        <div className="w-full max-w-6xl bg-white/95 p-4 rounded-2xl shadow-[0_4px_0_0_rgba(0,0,0,0.2)] mb-4 flex justify-between items-center border-l-8 border-emerald-700 z-10">
           <div className="text-xl font-bold w-1/3 flex items-center gap-2">
             {turn === 'player' ? (
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg border-2 border-blue-300 shadow-sm flex items-center gap-2">

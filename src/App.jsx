@@ -10,46 +10,46 @@ import React, { useState, useEffect, useRef } from 'react';
 //   · 8단원 기분 · 나이        : How are you today? / I'm happy.
 //                               How old are you? / I'm ten years old.
 //  - 한 단원에 여러 문장을 넣어두면, 게임을 시작할 때마다 필요한 개수만큼 무작위로 뽑아 배치합니다.
-//  - image: /images/파일명 (public/images, Canva 로 만든 그림)
+//  - image: images/파일명 (앞에 / 없이 — GitHub Pages 하위 주소에서도 열리도록) (public/images, Canva 로 만든 그림)
 //  - emoji: 그림을 불러오지 못할 때 대신 보여줄 이모지
 //  - 그림 속 표정(👍 웃음 / ❌ 못 함·없음)을 보고 Yes / No 대답을 고릅니다.
 // =================================================================
 const UNIT_POOLS = {
   '6단원': [
-    { emoji: '🏊', image: '/images/u6_01_swim_yes.png', question: 'Can you swim?', answer: 'Yes, I can.', ko: '너는 수영할 수 있니? / 응, 할 수 있어.' },
-    { emoji: '⛸️', image: '/images/u6_02_skate_no.png', question: 'Can you skate?', answer: "No, I can't.", ko: '너는 스케이트를 탈 수 있니? / 아니, 못 해.' },
-    { emoji: '⛷️', image: '/images/u6_03_ski_yes.png', question: 'Can you ski?', answer: 'Yes, I can.', ko: '너는 스키를 탈 수 있니? / 응, 할 수 있어.' },
-    { emoji: '💃', image: '/images/u6_04_dance_yes.png', question: 'Can you dance?', answer: 'Yes, I can.', ko: '너는 춤출 수 있니? / 응, 할 수 있어.' },
-    { emoji: '🍳', image: '/images/u6_05_cook_no.png', question: 'Can you cook?', answer: "No, I can't.", ko: '너는 요리할 수 있니? / 아니, 못 해.' },
-    { emoji: '⚽', image: '/images/u6_06_soccer_yes.png', question: 'Can you play soccer?', answer: 'Yes, I can.', ko: '너는 축구를 할 수 있니? / 응, 할 수 있어.' },
-    { emoji: '🚲', image: '/images/u6_07_bike_no.png', question: 'Can you ride a bike?', answer: "No, I can't.", ko: '너는 자전거를 탈 수 있니? / 아니, 못 해.' },
-    { emoji: '🎹', image: '/images/u6_08_piano_yes.png', question: 'Can you play the piano?', answer: 'Yes, I can.', ko: '너는 피아노를 칠 수 있니? / 응, 할 수 있어.' },
-    { emoji: '🪢', image: '/images/u6_09_jumprope_no.png', question: 'Can you jump rope?', answer: "No, I can't.", ko: '너는 줄넘기를 할 수 있니? / 아니, 못 해.' },
-    { emoji: '🎤', image: '/images/u6_10_sing_yes.png', question: 'Can you sing?', answer: 'Yes, I can.', ko: '너는 노래할 수 있니? / 응, 할 수 있어.' },
+    { emoji: '🏊', image: 'images/u6_01_swim_yes.png', question: 'Can you swim?', answer: 'Yes, I can.', ko: '너는 수영할 수 있니? / 응, 할 수 있어.' },
+    { emoji: '⛸️', image: 'images/u6_02_skate_no.png', question: 'Can you skate?', answer: "No, I can't.", ko: '너는 스케이트를 탈 수 있니? / 아니, 못 해.' },
+    { emoji: '⛷️', image: 'images/u6_03_ski_yes.png', question: 'Can you ski?', answer: 'Yes, I can.', ko: '너는 스키를 탈 수 있니? / 응, 할 수 있어.' },
+    { emoji: '💃', image: 'images/u6_04_dance_yes.png', question: 'Can you dance?', answer: 'Yes, I can.', ko: '너는 춤출 수 있니? / 응, 할 수 있어.' },
+    { emoji: '🍳', image: 'images/u6_05_cook_no.png', question: 'Can you cook?', answer: "No, I can't.", ko: '너는 요리할 수 있니? / 아니, 못 해.' },
+    { emoji: '⚽', image: 'images/u6_06_soccer_yes.png', question: 'Can you play soccer?', answer: 'Yes, I can.', ko: '너는 축구를 할 수 있니? / 응, 할 수 있어.' },
+    { emoji: '🚲', image: 'images/u6_07_bike_no.png', question: 'Can you ride a bike?', answer: "No, I can't.", ko: '너는 자전거를 탈 수 있니? / 아니, 못 해.' },
+    { emoji: '🎹', image: 'images/u6_08_piano_yes.png', question: 'Can you play the piano?', answer: 'Yes, I can.', ko: '너는 피아노를 칠 수 있니? / 응, 할 수 있어.' },
+    { emoji: '🪢', image: 'images/u6_09_jumprope_no.png', question: 'Can you jump rope?', answer: "No, I can't.", ko: '너는 줄넘기를 할 수 있니? / 아니, 못 해.' },
+    { emoji: '🎤', image: 'images/u6_10_sing_yes.png', question: 'Can you sing?', answer: 'Yes, I can.', ko: '너는 노래할 수 있니? / 응, 할 수 있어.' },
   ],
   '7단원': [
-    { emoji: '🖊️', image: '/images/u7_01_pen_yes.png', question: 'Do you have a pen?', answer: 'Yes, I do. I have a pen.', ko: '너는 펜을 가지고 있니? / 응, 있어. 나는 펜을 가지고 있어.' },
-    { emoji: '📏', image: '/images/u7_02_ruler_no.png', question: 'Do you have a ruler?', answer: "No, I don't. I don't have a ruler.", ko: '너는 자를 가지고 있니? / 아니, 없어. 나는 자가 없어.' },
-    { emoji: '🧽', image: '/images/u7_03_eraser_yes.png', question: 'Do you have an eraser?', answer: 'Yes, I do. I have an eraser.', ko: '너는 지우개를 가지고 있니? / 응, 있어. 나는 지우개를 가지고 있어.' },
-    { emoji: '📓', image: '/images/u7_04_notebook_no.png', question: 'Do you have a notebook?', answer: "No, I don't. I don't have a notebook.", ko: '너는 공책을 가지고 있니? / 아니, 없어. 나는 공책이 없어.' },
-    { emoji: '🖍️', image: '/images/u7_05_crayon_yes.png', question: 'Do you have a crayon?', answer: 'Yes, I do. I have a crayon.', ko: '너는 크레용을 가지고 있니? / 응, 있어. 나는 크레용을 가지고 있어.' },
-    { emoji: '✏️', image: '/images/u7_06_pencil_no.png', question: 'Do you have a pencil?', answer: "No, I don't. I don't have a pencil.", ko: '너는 연필을 가지고 있니? / 아니, 없어. 나는 연필이 없어.' },
-    { emoji: '📕', image: '/images/u7_07_book_yes.png', question: 'Do you have a book?', answer: 'Yes, I do. I have a book.', ko: '너는 책을 가지고 있니? / 응, 있어. 나는 책을 가지고 있어.' },
-    { emoji: '☂️', image: '/images/u7_08_umbrella_no.png', question: 'Do you have an umbrella?', answer: "No, I don't. I don't have an umbrella.", ko: '너는 우산을 가지고 있니? / 아니, 없어. 나는 우산이 없어.' },
-    { emoji: '🍎', image: '/images/u7_09_apple_yes.png', question: 'Do you have an apple?', answer: 'Yes, I do. I have an apple.', ko: '너는 사과를 가지고 있니? / 응, 있어. 나는 사과를 가지고 있어.' },
-    { emoji: '🧸', image: '/images/u7_10_teddybear_no.png', question: 'Do you have a teddy bear?', answer: "No, I don't. I don't have a teddy bear.", ko: '너는 곰 인형을 가지고 있니? / 아니, 없어. 나는 곰 인형이 없어.' },
+    { emoji: '🖊️', image: 'images/u7_01_pen_yes.png', question: 'Do you have a pen?', answer: 'Yes, I do. I have a pen.', ko: '너는 펜을 가지고 있니? / 응, 있어. 나는 펜을 가지고 있어.' },
+    { emoji: '📏', image: 'images/u7_02_ruler_no.png', question: 'Do you have a ruler?', answer: "No, I don't. I don't have a ruler.", ko: '너는 자를 가지고 있니? / 아니, 없어. 나는 자가 없어.' },
+    { emoji: '🧽', image: 'images/u7_03_eraser_yes.png', question: 'Do you have an eraser?', answer: 'Yes, I do. I have an eraser.', ko: '너는 지우개를 가지고 있니? / 응, 있어. 나는 지우개를 가지고 있어.' },
+    { emoji: '📓', image: 'images/u7_04_notebook_no.png', question: 'Do you have a notebook?', answer: "No, I don't. I don't have a notebook.", ko: '너는 공책을 가지고 있니? / 아니, 없어. 나는 공책이 없어.' },
+    { emoji: '🖍️', image: 'images/u7_05_crayon_yes.png', question: 'Do you have a crayon?', answer: 'Yes, I do. I have a crayon.', ko: '너는 크레용을 가지고 있니? / 응, 있어. 나는 크레용을 가지고 있어.' },
+    { emoji: '✏️', image: 'images/u7_06_pencil_no.png', question: 'Do you have a pencil?', answer: "No, I don't. I don't have a pencil.", ko: '너는 연필을 가지고 있니? / 아니, 없어. 나는 연필이 없어.' },
+    { emoji: '📕', image: 'images/u7_07_book_yes.png', question: 'Do you have a book?', answer: 'Yes, I do. I have a book.', ko: '너는 책을 가지고 있니? / 응, 있어. 나는 책을 가지고 있어.' },
+    { emoji: '☂️', image: 'images/u7_08_umbrella_no.png', question: 'Do you have an umbrella?', answer: "No, I don't. I don't have an umbrella.", ko: '너는 우산을 가지고 있니? / 아니, 없어. 나는 우산이 없어.' },
+    { emoji: '🍎', image: 'images/u7_09_apple_yes.png', question: 'Do you have an apple?', answer: 'Yes, I do. I have an apple.', ko: '너는 사과를 가지고 있니? / 응, 있어. 나는 사과를 가지고 있어.' },
+    { emoji: '🧸', image: 'images/u7_10_teddybear_no.png', question: 'Do you have a teddy bear?', answer: "No, I don't. I don't have a teddy bear.", ko: '너는 곰 인형을 가지고 있니? / 아니, 없어. 나는 곰 인형이 없어.' },
   ],
   '8단원': [
-    { emoji: '😄', image: '/images/u8_01_happy.png', question: 'How are you today?', answer: "I'm happy.", ko: '오늘 기분이 어때? / 나는 행복해.' },
-    { emoji: '😢', image: '/images/u8_02_sad.png', question: 'How are you today?', answer: "I'm sad.", ko: '오늘 기분이 어때? / 나는 슬퍼.' },
-    { emoji: '😠', image: '/images/u8_03_angry.png', question: 'How are you today?', answer: "I'm angry.", ko: '오늘 기분이 어때? / 나는 화가 나.' },
-    { emoji: '🤤', image: '/images/u8_04_hungry.png', question: 'How are you today?', answer: "I'm hungry.", ko: '오늘 기분이 어때? / 나는 배가 고파.' },
-    { emoji: '😪', image: '/images/u8_05_tired.png', question: 'How are you today?', answer: "I'm tired.", ko: '오늘 기분이 어때? / 나는 피곤해.' },
-    { emoji: '8️⃣', image: '/images/u8_06_eight.png', question: 'How old are you?', answer: "I'm eight years old.", ko: '너는 몇 살이니? / 나는 여덟 살이야.' },
-    { emoji: '9️⃣', image: '/images/u8_07_nine.png', question: 'How old are you?', answer: "I'm nine years old.", ko: '너는 몇 살이니? / 나는 아홉 살이야.' },
-    { emoji: '🔟', image: '/images/u8_08_ten.png', question: 'How old are you?', answer: "I'm ten years old.", ko: '너는 몇 살이니? / 나는 열 살이야.' },
-    { emoji: '🎂', image: '/images/u8_09_eleven.png', question: 'How old are you?', answer: "I'm eleven years old.", ko: '너는 몇 살이니? / 나는 열한 살이야.' },
-    { emoji: '🎉', image: '/images/u8_10_twelve.png', question: 'How old are you?', answer: "I'm twelve years old.", ko: '너는 몇 살이니? / 나는 열두 살이야.' },
+    { emoji: '😄', image: 'images/u8_01_happy.png', question: 'How are you today?', answer: "I'm happy.", ko: '오늘 기분이 어때? / 나는 행복해.' },
+    { emoji: '😢', image: 'images/u8_02_sad.png', question: 'How are you today?', answer: "I'm sad.", ko: '오늘 기분이 어때? / 나는 슬퍼.' },
+    { emoji: '😠', image: 'images/u8_03_angry.png', question: 'How are you today?', answer: "I'm angry.", ko: '오늘 기분이 어때? / 나는 화가 나.' },
+    { emoji: '🤤', image: 'images/u8_04_hungry.png', question: 'How are you today?', answer: "I'm hungry.", ko: '오늘 기분이 어때? / 나는 배가 고파.' },
+    { emoji: '😪', image: 'images/u8_05_tired.png', question: 'How are you today?', answer: "I'm tired.", ko: '오늘 기분이 어때? / 나는 피곤해.' },
+    { emoji: '8️⃣', image: 'images/u8_06_eight.png', question: 'How old are you?', answer: "I'm eight years old.", ko: '너는 몇 살이니? / 나는 여덟 살이야.' },
+    { emoji: '9️⃣', image: 'images/u8_07_nine.png', question: 'How old are you?', answer: "I'm nine years old.", ko: '너는 몇 살이니? / 나는 아홉 살이야.' },
+    { emoji: '🔟', image: 'images/u8_08_ten.png', question: 'How old are you?', answer: "I'm ten years old.", ko: '너는 몇 살이니? / 나는 열 살이야.' },
+    { emoji: '🎂', image: 'images/u8_09_eleven.png', question: 'How old are you?', answer: "I'm eleven years old.", ko: '너는 몇 살이니? / 나는 열한 살이야.' },
+    { emoji: '🎉', image: 'images/u8_10_twelve.png', question: 'How old are you?', answer: "I'm twelve years old.", ko: '너는 몇 살이니? / 나는 열두 살이야.' },
   ],
 };
 
